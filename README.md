@@ -6,8 +6,10 @@
 
 ## Headline results
 
-Revenue 	Profit	 Margin 	Orders	 Customers
-$29.37M	    $6.73M	  22.92%	24,905	  2,000
+| Revenue | Profit | Margin | Orders | Customers |
+|---:|---:|---:|---:|---:|
+| **$29.37M** | **$6.73M** | **22.92%** | **24,905** | **2,000** |
+
 
 ## Table of Contents
 
