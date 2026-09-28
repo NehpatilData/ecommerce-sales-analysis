@@ -1,0 +1,11 @@
+customer_id,row_count,distinct_versions,is_exact_duplicate
+C00205,2,1,True
+C00285,2,1,True
+C00695,2,1,True
+C01049,2,1,True
+C01073,2,1,True
+C01725,2,1,True
+C01759,2,1,True
+C01867,2,1,True
+C01887,2,1,True
+C01927,2,1,True

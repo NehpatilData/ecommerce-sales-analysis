@@ -1,0 +1,3 @@
+# Python dependencies for vibe_analysis_project cleaning scripts.
+# Install with:  python -m pip install -r requirements.txt
+pandas>=2.0

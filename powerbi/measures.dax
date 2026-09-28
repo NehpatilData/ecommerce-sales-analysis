@@ -1,0 +1,104 @@
+// =====================================================================================
+//  E-Commerce Sales Dashboard  -  DAX measures
+//  Project : vibe_analysis_project
+//  Model   : fact_orders (grain: one row per order line)
+//            dim_customer, dim_product, dim_region, dim_date
+//  Source  : Data/clean/*.csv  (the CSV files are never modified)
+// =====================================================================================
+//
+//  HOW TO USE
+//  ----------
+//  1. Import the five CSVs from Data/clean/ (see POWER_BI_BUILD_GUIDE.md, Step 1).
+//  2. Create the four relationships (Step 3).
+//  3. For every measure below:  Modeling > New measure  ->  paste the one-line
+//     definition  ->  set the Number format listed in the trailing comment.
+//
+//  PREREQUISITE - data type (do this in Power Query, Step 2)
+//  --------------------------------------------------------
+//  fact_orders[order_date] must be data type  Date  (not Date/Time, not Text) and
+//  dim_date[date] must be data type  Date.  The source stores order_date as
+//  "2025-08-20 00:00:00", so both sides must be normalized to Date or the
+//  relationship fact_orders[order_date] -> dim_date[date] will not resolve and
+//  every date-based visual will come back blank.
+//
+// =====================================================================================
+
+
+// -------------------------------------------------------------------------------------
+//  CORE KPI MEASURES  (the five KPI cards)
+// -------------------------------------------------------------------------------------
+
+//  Sum of the net line amount.  Target: 29,374,086.19
+//  Number format: #,0.00
+Total Revenue = SUM ( fact_orders[sales_amount] )
+
+
+//  Sum of line profit.  Target: 6,732,332.30
+//  Number format: #,0.00
+Total Profit = SUM ( fact_orders[profit] )
+
+
+//  Profit as a share of revenue.  Target: 22.92%
+//  DIVIDE is used instead of "/" so a zero or empty denominator returns blank
+//  rather than an error.
+//  Number format: 0.00 %
+Profit Margin = DIVIDE ( [Total Profit], [Total Revenue] )
+
+
+//  Count of distinct orders in the current filter context.  Target: 24,905
+//  order_id is unique in fact_orders, so this equals the row count; DISTINCTCOUNT
+//  is used because it states the business meaning ("orders", not "rows") and stays
+//  correct if order lines are ever added later.
+//  Number format: #,0
+Total Orders = DISTINCTCOUNT ( fact_orders[order_id] )
+
+
+//  Distinct customers that placed an order in the current filter context.
+//  Target: 2,000 (all 2,000 customers have at least one order)
+//  Counted over the FACT table on purpose, so the card responds to the
+//  Year / Region / Category slicers.  Number format: #,0
+Total Customers = DISTINCTCOUNT ( fact_orders[customer_id] )
+
+
+// -------------------------------------------------------------------------------------
+//  OPTIONAL SUPPORTING MEASURES  (not required by the brief - use for tooltips only)
+// -------------------------------------------------------------------------------------
+
+//  Distinct products sold in scope.  Target (no slicers): 100
+//  Number format: #,0
+Distinct Products = DISTINCTCOUNT ( fact_orders[product_id] )
+
+
+//  Order lines flagged as a return (quantity < 0).  Target: 15
+//  Number format: #,0
+Return Lines = CALCULATE ( COUNTROWS ( fact_orders ), fact_orders[is_return] = "Y" )
+
+
+//  Average revenue per order line.  Target: 1,179.4453 (29,374,086.19 / 24,905)
+//  Number format: #,0.00
+Avg Line Value = DIVIDE ( [Total Revenue], COUNTROWS ( fact_orders ) )
+
+
+//  Order lines whose order_date is blank (the 10 rows where the raw value was
+//  "not_a_date", flagged is_invalid_date = "Y").  Target: 10
+//  Number format: #,0
+Lines With No Date = CALCULATE ( COUNTROWS ( fact_orders ), fact_orders[is_invalid_date] = "Y" )
+
+
+// =====================================================================================
+//  CALCULATED COLUMNS  (optional - only needed if you want the exact "Mon YYYY"
+//  axis label used by the HTML dashboard instead of the built-in date hierarchy)
+//
+//  Create both on dim_date:
+//
+//      month_label = FORMAT ( dim_date[date], "MMM YYYY" )          -> Data type: Text
+//      month_sort  = dim_date[year] * 100 + dim_date[month]          -> Data type: Whole number
+//
+//  Then: select the month_label column > Column tools > Sort by column > month_sort.
+//
+//  WHY TWO COLUMNS: "Sort by column" requires a one-to-one mapping between the
+//  label and the sort column.  Sorting month_label directly by dim_date[date]
+//  FAILS, because each label ("Jan 2024") maps to ~31 different dates.  month_sort
+//  gives exactly one value per label.  Sorting is what keeps the trend
+//  chronological - without it Power BI sorts alphabetically (Apr, Aug, Dec, ...).
+// =====================================================================================
