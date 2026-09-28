@@ -55,7 +55,6 @@ An e-commerce company wants to turn raw transactional data into decisions. The q
 | Regions (states) | 20 | 20 |
 
 - **Period:** Jan 2024 – Dec 2025
-- **Source:** `[add source: Kaggle link / self-generated practice dataset]`. The data appears synthetic (see [limitations](#10-assumptions--limitations)).
 - **Raw files (never modified):** `orders_raw.csv`, `customers_raw.csv`, `products_raw.csv`, `regions_raw.csv`
 
 ---
@@ -105,7 +104,6 @@ Each stage is scripted, so the full project can be regenerated from the raw file
 
 ## 5. Data model (star schema)
 
-![Star schema in Power BI model view](images/data_model_powerbi.png)
 
 *Relationships as built in Power BI Desktop: one fact table in the centre, four dimensions, all one-to-many with filters flowing from dimension to fact.*
 
@@ -250,7 +248,6 @@ Margins are nearly identical (22.3–23.1%). **Central looks small only because 
 
 👉 **[Open the live dashboard](https://nehpatildata.github.io/ecommerce-sales-analysis/dashboard/)** (hosted on GitHub Pages)
 
-![Filtered dashboard view](images/dashboard_filtered.png)
 
 - KPI cards: revenue, profit, orders, customers, margin
 - Monthly sales and profit trend
